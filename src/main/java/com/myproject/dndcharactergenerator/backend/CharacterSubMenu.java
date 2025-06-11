@@ -3,14 +3,14 @@ package main.java.com.myproject.dndcharactergenerator.backend;
 import java.util.Scanner;
 
 import static main.java.com.myproject.dndcharactergenerator.backend.MainMenu.readMenuInputInt;
-import static main.java.com.myproject.dndcharactergenerator.backend.CharacterGenerator.randomCharakter;
+import static main.java.com.myproject.dndcharactergenerator.backend.CharacterGenerator.randomCharacter;
 import static main.java.com.myproject.dndcharactergenerator.backend.CharacterGenerator.customCharacter;
 
 public class CharacterSubMenu {
 
     static Scanner scanner = new Scanner(System.in);
 
-    public static void characterSubMenu(){
+    public static boolean characterSubMenu(){
         boolean running = true;
 
         do {
@@ -19,10 +19,11 @@ public class CharacterSubMenu {
             switch (menuChoice) {
                 case 1:
                     System.out.println("\n--- Generating a Random Character ---\n");
-                    randomCharakter();
+                    running = randomCharacter();
+                    break;
                 case 2:
                     System.out.println("\n--- Generating a Custom Character ---\n");
-                    customCharacter();
+                    running = customCharacter();
                     break;
                 case 0:
                     System.out.println("\nExiting Character Menu.\n");
@@ -30,6 +31,7 @@ public class CharacterSubMenu {
                     break;
             }
         } while (running);
+        return true;
     }
 
     private static void characterSubMenuOptions() {

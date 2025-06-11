@@ -2,7 +2,8 @@ package main.java.com.myproject.dndcharactergenerator.backend;
 
 import java.util.Scanner;
 
-import static main.java.com.myproject.dndcharactergenerator.backend.DiceRolls.statRolls;
+import static main.java.com.myproject.dndcharactergenerator.backend.utilities.DiceRolls.statRolls;
+import static main.java.com.myproject.dndcharactergenerator.backend.utilities.UtilityMethods.confirmationChoice;
 
 public class CharacterGenerator {
     static Scanner scanner = new Scanner(System.in);
@@ -33,10 +34,9 @@ public class CharacterGenerator {
 
     // CUSTOM METHODS
 
-    public static void customCharacter() {
-        boolean running = true;
-        while (running) {
-            boolean confirm = false;
+    public static boolean customCharacter() {
+        boolean running = false;
+        while (!running) {
 
             System.out.println("\n--- Starting New Character Creation ---");
 
@@ -51,16 +51,18 @@ public class CharacterGenerator {
             newCharakter.displayInfo();
 
             //System.out.println("Do you wish to save the character or start from scratch? Y/N");
-            System.out.println("Do you wish to exit to last menu?");
-        }
 
+            String prompt = "Do you wish to exit to last menu?";
+            running = confirmationChoice(prompt);
+        }
+        return true;
     }
 
     public static CharacterAttributes attributesCustom() {
-        boolean happy = false;
+        boolean running = true;
         CharacterAttributes chosenAttributes = null;
 
-        while (!happy) {
+        while (running) {
 
             System.out.println("\nRolling attributes...\n");
 
@@ -74,23 +76,14 @@ public class CharacterGenerator {
             CharacterAttributes currentRolls = new CharacterAttributes(str, dex, con, intel, wis, cha);
             currentRolls.displayCharacterAttributes();
 
-            System.out.println("Do you wish to confirm the attributes or roll again? Y/N");
-            String input = scanner.nextLine();
-
-            char confirmationChar = ' ';
-            if (!input.isEmpty()) {
-                confirmationChar = java.lang.Character.toUpperCase(input.charAt(0));
-            }
-
-            if (confirmationChar == 'y' || confirmationChar == 'Y') {
-                happy = true;
+            String prompt = "Do you wish to confirm the attributes (Y) or roll again(N)?";
+            boolean choice = confirmationChoice(prompt);
+            if (choice){
                 chosenAttributes = currentRolls;
+                running = false;
             }
-            else if (confirmationChar == 'N') {
+            if (!choice){
                 System.out.println("Discarding current attributes. Rolling again...\n");
-            }
-            else {
-                System.out.println("Invalid Input! Please enter 'Y' or 'N' to continue!\n");
             }
         }
         return chosenAttributes;
@@ -99,32 +92,21 @@ public class CharacterGenerator {
 
     // RANDOM METHODS
 
-    public static void randomCharakter() {
+    public static boolean randomCharacter() {
         boolean running = true;
         while (running) {
             String name = readCharacterName();
             System.out.println("\nRolling attributes...\n");
 
             Character randomCharacter = new Character(name, randomAttributes());
-            System.out.println("Okay... this is what the dices decided on:");
+            System.out.println("Okay... this is what the dice dictate:");
 
             randomCharacter.displayInfo();
 
-            System.out.println("\nDo you want to generate another character? Y/N");
-            String input = scanner.nextLine().trim();
-            if (input.isEmpty()) {
-                System.out.println("Input cannot be empty! Please enter a valid choice!");
-                continue;
-            }
-
-            char inputChar = java.lang.Character.toUpperCase(input.charAt(0));
-            if (inputChar == 'Y') {
-                break;
-            }
-            if (inputChar == 'N') {
-                running = false;
-            }
+            String prompt = "Do you want to generate another character?";
+            running = confirmationChoice(prompt);
         }
+        return true;
     }
 
     public static CharacterAttributes randomAttributes() {
